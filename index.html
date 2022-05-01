@@ -57,12 +57,13 @@
         <div class="input-container">
             <input type="text" maxlength="5" minlength="5">
             <button>Enter</button>
+            <button id="restart">Restart</button>
         </div>
         <p id="game-over"></p>
     </div>
 </div>
 <script>
-    const answer = "CRANE";//todo make random word
+    const answer = getAnswer();
     const board = document.getElementById('board');
     const textBox = document.querySelector('input');
     const submitButton = document.querySelector('button');
@@ -75,17 +76,83 @@
         if(guess.length !== 5){
             return
         }
-        //todo clear the textbox once you hit submit
 
-        //render guess to board
         writeGuess(guess)
-
         currentGuessNumber++;
 
-        //todo check for win
+        if (guess.toUpperCase() === answer.toUpperCase()){
+            gameOverMessage.textContent = 'You won';
+            submitButton.remove();
+            textBox.remove();
+            return
+        }
 
-        //todo check for loss
+        if (currentGuessNumber >= board.children.length) {
+            gameOverMessage.textContent = `You lost. The answer was ${answer}}`;
+            submitButton.remove();
+            textBox.remove();
+            return
+        }
+        textBox.value = ''
     })
+
+    function writeGuess(guess){
+        let matchArray = buildMatchArray(guess)
+        let currentGuessRow = board.children[currentGuessNumber];
+        let columns = currentGuessRow.children;
+
+        for (let i=0; i<matchArray.length; i++){
+            let column = columns[i];
+            column.textContent = guess[i].toUpperCase();
+
+            if (matchArray[i] === 2){
+                column.classList.add('correct');
+            } else if (matchArray[i] === 1){
+                column.classList.add('in-word');
+            }else{
+                column.classList.add('incorrect');
+            }
+        }
+    }
+
+    function buildMatchArray(guess){
+        guess = guess.toUpperCase();
+        let answerAsArray = [];
+        let matchArray = [0, 0, 0, 0, 0];
+
+        for (let i = 0; i < answer.length; i++){
+            let letter = answer[i].toUpperCase();
+            answerAsArray.push(letter);
+        }
+
+        for (let i =0; i < guess.length; i++){
+            let letter = guess[i];
+            if (letter === answer[i]){
+                answerAsArray[i] = null;
+                matchArray[i] = 2;
+            }
+        }
+
+        for (let i = 0; i < guess.length; i++){
+            let letter = guess[i];
+            let index = answerAsArray.indexOf(letter);
+
+            if (index === -1){
+                continue
+            }
+
+            answerAsArray[index] = null;
+            matchArray[i] = 1
+        }
+        return matchArray
+    }
+
+    function getAnswer(){
+        let answerList = ['WRITE', 'CARES', 'TRACK', 'SPICE', 'CRANE', 'PLANE', 'BINGO', 'GNOME', 'FLARE', 'HUMOR'];
+        let randomNumber = Math.floor(Math.random()*answerList.length)
+        let answer = answerList[randomNumber];
+        return answer
+    }
 </script>
 </body>
 </html>
