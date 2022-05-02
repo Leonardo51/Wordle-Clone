@@ -68,10 +68,11 @@
     const textBox = document.querySelector('input');
     const submitButton = document.querySelector('button');
     const gameOverMessage = document.getElementById('game-over');
+    const restart = document.getElementById('restart')
 
     let currentGuessNumber = 0;
 
-    submitButton.addEventListener('click',function (e){
+    submitButton.addEventListener('click',function(e){
         let guess = textBox.value;
         if(guess.length !== 5){
             return
@@ -88,7 +89,7 @@
         }
 
         if (currentGuessNumber >= board.children.length) {
-            gameOverMessage.textContent = `You lost. The answer was ${answer}}`;
+            gameOverMessage.textContent = `You lost. The answer was ${answer}`;
             submitButton.remove();
             textBox.remove();
             return
@@ -153,6 +154,18 @@
         let answer = answerList[randomNumber];
         return answer
     }
+
+    restart.addEventListener('click', function(e){
+        gameOverMessage.textContent = '';
+        currentGuessNumber = 0;
+        getAnswer();
+        board.children = ''
+        submitButton.add()
+        textBox.add();
+        return;
+    })
+
+
 </script>
 </body>
 </html>
